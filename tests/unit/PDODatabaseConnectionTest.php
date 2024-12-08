@@ -2,6 +2,8 @@
 
 namespace Tests\unit;
 
+use App\Contracts\DatabaseConnectionInterface;
+use App\Database\PDODatabaseConnection;
 use App\Helpers\Config;
 use PHPUnit\Framework\TestCase;
 
@@ -10,12 +12,13 @@ class PDODatabaseConnectionTest extends TestCase
     public function testPdoDatabaseConnectionImplementsDatabaseConnectionInterface()
     {
         $configs = $this->getConfigs();
-        $pdoConnetion = new PDODatabaseConnection();
+        $pdoConnection = new PDODatabaseConnection();
+        $this->assertInstanceOf(DatabaseConnectionInterface::class,$pdoConnection);
     }
 
     private function getConfigs()
     {
-        $config = Config::get('database','pdo');
-        var_dump($config);
+       return $config = Config::get('database','pdo_testing');
+
     }
 }
