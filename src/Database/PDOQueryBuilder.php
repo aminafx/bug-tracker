@@ -73,15 +73,30 @@ public function __construct(DatabaseConnectionInterface $connection)
 
     }
 
-    public function get()
+    public function get(array $columns= ['*'])
     {
         $conditions = implode(' and ',$this->conditions);
-
-        $sql = "select * from {$this->table} where {$conditions}";
+        $columns = implode(',',$columns);
+        $sql = "SELECT {$columns} FROM {$this->table} WHERE {$conditions}";
         $query =  $this->connection->prepare($sql);
         $result = $query->execute($this->values);
         return $query->fetchAll();
 
+    }
+
+    public function first()
+    {
+        $conditions = implode(' and ',$this->conditions);
+        $sql = "SELECT * FROM {$this->table} WHERE {$conditions}";
+        $query =  $this->connection->prepare($sql);
+        $result = $query->execute($this->values);
+        $result = $query->fetch();
+        return empty($result) ? null : $result;
+    }
+
+    public function find(int $id)
+    {
+          return $this->where('id',$id)->first();
     }
 
     public function truncateAllTable()
