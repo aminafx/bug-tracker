@@ -44,6 +44,7 @@ class PDODatabaseConnection implements DatabaseConnectionInterface
             $this->connection = new PDO(...$dsn);
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->connection->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE,PDO::FETCH_OBJ);
+
         } catch(PDOException $e) {
             Throw new DatabaseConnectionException($e->getMessage());
         }
