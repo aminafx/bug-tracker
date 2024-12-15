@@ -16,9 +16,12 @@ class PDOQueryBuilderTest extends TestCase
         $configs = $this->getConfigs();
         $pdoConnection = new PDODatabaseConnection($configs);
         $this->queryBuilder = new PDOQueryBuilder($pdoConnection->connect());
+        $this->queryBuilder->beginTransaction();
         parent::setup();
 
     }
+
+    
 
     public function testItCanCreateData()
     {
@@ -32,12 +35,26 @@ class PDOQueryBuilderTest extends TestCase
     {
 
         $result = $this->queryBuilder->table('bugs')
-            ->where('user', 'Amin Jalili')
+            ->where('user', 'Amin')
             ->update(['email' => 'Aminjalili123312@gmail.com']);
 
 
-        $this->assertEquals(0, $result);
+        $this->assertEquals(1, $result);
     }
+
+    public function testItCanUpdateWithMultipleWhere()
+    {
+        $this->insertInToDB();
+        $this->insertInToDB(['user'=>'morteza ahmadi']);
+
+        $result=  $this->queryBuilder
+            ->table('bugs')
+            ->where('user','Amin')
+            ->where('link','test')
+        ->update(['name'=>"after multiple where"]);
+        $this->assertEquals(1,$result);
+    }
+
 
     public function testItCanDeleteRecord()
     {
@@ -51,15 +68,16 @@ class PDOQueryBuilderTest extends TestCase
 
     }
 
-    private function insertInToDB()
+    private function insertInToDB($options = [])
     {
 
-        $data = [
+        $data = array_merge([
             'name' => 'First Bug report',
             'link' => 'http://link.com',
             'user' => 'Amin Jalili',
             'email' => 'amin@jalili137819@gmail.com'
-        ];
+        ],$options);
+
         return $this->queryBuilder->table('bugs')->create($data);
 
     }
@@ -73,7 +91,8 @@ class PDOQueryBuilderTest extends TestCase
 
     public function tearDown(): void
     {
-        $this->queryBuilder->truncateAllTable();
+//        $this->queryBuilder->truncateAllTable();
+        $this->queryBuilder->rollback();
         parent::tearDown();
     }
 }

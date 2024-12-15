@@ -53,7 +53,7 @@ public function __construct(DatabaseConnectionInterface $connection)
             $fields[] .="{$column}='{$value}'";
         }
         $fields = implode(',',$fields);
-        $conditions = implode('and',$this->conditions);
+        $conditions = implode(' and ',$this->conditions);
 
         $sql = "UPDATE {$this->table} SET {$fields} WHERE {$conditions};";
         $query =  $this->connection->prepare($sql);
@@ -63,7 +63,7 @@ public function __construct(DatabaseConnectionInterface $connection)
 
     public function delete()
     {
-        $conditions = implode('and',$this->conditions);
+        $conditions = implode(' and ',$this->conditions);
 
         $sql = "DELETE FROM {$this->table} WHERE {$conditions}";
         $query =  $this->connection->prepare($sql);
@@ -82,5 +82,14 @@ public function __construct(DatabaseConnectionInterface $connection)
         }
 
     }
-    
+
+    public function beginTransaction()
+    {
+        $this->connection->beginTransaction();
+    }
+
+    public function rollback()
+    {
+        $this->connection->rollback();
+    }
 }
