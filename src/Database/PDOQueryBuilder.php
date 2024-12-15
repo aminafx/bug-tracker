@@ -73,6 +73,17 @@ public function __construct(DatabaseConnectionInterface $connection)
 
     }
 
+    public function get()
+    {
+        $conditions = implode(' and ',$this->conditions);
+
+        $sql = "select * from {$this->table} where {$conditions}";
+        $query =  $this->connection->prepare($sql);
+        $result = $query->execute($this->values);
+        return $query->fetchAll();
+
+    }
+
     public function truncateAllTable()
     {
         $query = $this->connection->prepare("SHOW TABLES");

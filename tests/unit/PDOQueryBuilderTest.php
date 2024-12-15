@@ -42,6 +42,17 @@ class PDOQueryBuilderTest extends TestCase
         $this->assertEquals(1, $result);
     }
 
+    public function testIrCanFetchData()
+    {
+        $this->multipleInsertIntoDb(10);
+        $this->multipleInsertIntoDb(10,['user'=>'morteza ahmadi']);
+
+        $result = $this->queryBuilder->table('bugs')->where('user','morteza ahmadi')->get();
+
+        $this->assertIsArray($result);
+        $this->assertCount(10,$result);
+    }
+
     public function testItCanUpdateWithMultipleWhere()
     {
         $this->insertInToDB();
@@ -80,6 +91,13 @@ class PDOQueryBuilderTest extends TestCase
 
         return $this->queryBuilder->table('bugs')->create($data);
 
+    }
+
+    private function multipleInsertIntoDb($count,$options=[])
+    {
+        for($i=1;$i<=$count;$i++){
+            $this->insertInToDB($options);
+        }
     }
 
     private function getConfigs()
