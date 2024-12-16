@@ -18,26 +18,21 @@ class PDOQueryBuilderTest extends TestCase
         $this->queryBuilder = new PDOQueryBuilder($pdoConnection->connect());
         $this->queryBuilder->beginTransaction();
         parent::setup();
-
     }
 
 
     public function testItCanCreateData()
     {
         $result = $this->insertInToDB();
-
         $this->assertIsInt($result);
         $this->assertGreaterThan(0, $result);
     }
 
     public function testItCanUpdateData()
     {
-
         $result = $this->queryBuilder->table('bugs')
             ->where('user', 'Amin')
             ->update(['email' => 'Aminjalili123312@gmail.com']);
-
-
         $this->assertEquals(1, $result);
     }
 
@@ -45,9 +40,7 @@ class PDOQueryBuilderTest extends TestCase
     {
         $this->multipleInsertIntoDb(10);
         $this->multipleInsertIntoDb(10, ['user' => 'morteza ahmadi']);
-
         $result = $this->queryBuilder->table('bugs')->where('user', 'morteza ahmadi')->get();
-
         $this->assertIsArray($result);
         $this->assertCount(10, $result);
     }
@@ -60,20 +53,15 @@ class PDOQueryBuilderTest extends TestCase
             ->table('bugs')
             ->where('user', 'morteza ahmadi')
             ->get(['name', 'user']);
-
         $this->assertIsArray($result);
-        $this->assertObjectHasProperty('name',$result[0]);
-        $this->assertObjectHasProperty('user',$result[0]);
-
-
-        $result = json_decode(json_encode($result[0]),true);
-
-        $this->assertEquals(['name','user'],array_keys($result));
+        $this->assertObjectHasProperty('name', $result[0]);
+        $this->assertObjectHasProperty('user', $result[0]);
+        $result = json_decode(json_encode($result[0]), true);
+        $this->assertEquals(['name', 'user'], array_keys($result));
     }
 
     public function testItCanGetFirstRow()
     {
-
         $this->multipleInsertIntoDb(10, ['name' => 'first row']);
         $result = $this->queryBuilder
             ->table('bugs')
@@ -81,18 +69,17 @@ class PDOQueryBuilderTest extends TestCase
             ->first();
 
         $this->assertIsObject($result);
-        $this->assertObjectHasProperty('name',$result);
-        $this->assertObjectHasProperty('user',$result);
-        $this->assertObjectHasProperty('id',$result);
-        $this->assertObjectHasProperty('email',$result);
-        $this->assertObjectHasProperty('link',$result);
+        $this->assertObjectHasProperty('name', $result);
+        $this->assertObjectHasProperty('user', $result);
+        $this->assertObjectHasProperty('id', $result);
+        $this->assertObjectHasProperty('email', $result);
+        $this->assertObjectHasProperty('link', $result);
     }
 
     public function testItCanUpdateWithMultipleWhere()
     {
         $this->insertInToDB();
         $this->insertInToDB(['user' => 'morteza ahmadi']);
-
         $result = $this->queryBuilder
             ->table('bugs')
             ->where('user', 'Amin')
@@ -104,35 +91,29 @@ class PDOQueryBuilderTest extends TestCase
 
     public function testItCanDeleteRecord()
     {
-       $this->multipleInsertIntoDb(4);
-
+        $this->multipleInsertIntoDb(4);
         $result = $this->queryBuilder->table('bugs')->where('user', 'Amin Jalili')->delete();
         $this->assertEquals(4, $result);
-
     }
 
     public function testItCanFindWithId()
     {
         $this->multipleInsertIntoDb(10);
-       $id =  $this->insertInToDB(['name'=>'for find']);
-       $result =$this->queryBuilder
-           ->table('bugs')
-           ->find($id);
-
+        $id = $this->insertInToDB(['name' => 'for find']);
+        $result = $this->queryBuilder
+            ->table('bugs')
+            ->find($id);
         $this->assertIsObject($result);
-        $this->assertEquals('for find',$result->name);
-
+        $this->assertEquals('for find', $result->name);
     }
 
     public function testItReturnsEmptyArrayWhenRecordNotFound()
     {
         $this->multipleInsertIntoDb(10);
-
         $result = $this->queryBuilder
             ->table('bugs')
-            ->where('user','dummy')
+            ->where('user', 'dummy')
             ->get();
-
         $this->assertIsArray($result);
         $this->assertEmpty($result);
 
@@ -141,12 +122,10 @@ class PDOQueryBuilderTest extends TestCase
     public function testItReturnNullWhenFirstRecordNotFound()
     {
         $this->multipleInsertIntoDb(10);
-
         $result = $this->queryBuilder
             ->table('bugs')
-            ->where('user','dummy')
+            ->where('user', 'dummy')
             ->first();
-
         $this->assertNull($result);
         $this->assertEmpty($result);
     }
@@ -156,25 +135,20 @@ class PDOQueryBuilderTest extends TestCase
         $this->multipleInsertIntoDb(10);
         $result = $this->queryBuilder
             ->table('bugs')
-            ->where('user','dummy')
-            ->update(['name'=>'test']);
-
-        $this->assertEquals(0,$result);
-
+            ->where('user', 'dummy')
+            ->update(['name' => 'test']);
+        $this->assertEquals(0, $result);
     }
 
     private function insertInToDB($options = [])
     {
-
         $data = array_merge([
             'name' => 'First Bug report',
             'link' => 'http://link.com',
             'user' => 'Amin Jalili',
             'email' => 'amin@jalili137819@gmail.com'
         ], $options);
-
         return $this->queryBuilder->table('bugs')->create($data);
-
     }
 
     private function multipleInsertIntoDb($count, $options = [])
@@ -186,9 +160,7 @@ class PDOQueryBuilderTest extends TestCase
 
     private function getConfigs()
     {
-
         return $config = Config::get('database', 'pdo_testing');
-
     }
 
     public function tearDown(): void
