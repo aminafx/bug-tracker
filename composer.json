@@ -19,5 +19,7 @@
             "email": "amin.jalili137819@gmail.comm"
         }
     ],
-    "require": {}
+    "require": {
+        "guzzlehttp/guzzle": "^7.9"
+    }
 }
